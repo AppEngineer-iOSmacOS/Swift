@@ -143,7 +143,7 @@ let texString = "1 . Создайте функцию, которая прини�
 
 println("\n \(crazy(inputString: texString))")
 
-
+//end
 
 /*
 
