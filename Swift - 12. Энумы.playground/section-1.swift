@@ -10,7 +10,7 @@ enum Chess {
     case pawn   (color: Color, position: Position)       // пешка
     case knight    (color: Color, position: Position)      //конь
     case elephant  (color: Color, position: Position)     //слон
-
+    case rook (color: Color, position: Position)       //ладья
     
     enum Color: String {
         case Black = "Black"
@@ -31,15 +31,48 @@ var f4 = Chess.queen(color: .White, position: (x: "e", y: 4))
 var f5 = Chess.knight(color: .White, position: ("b", 7))
 var f6 = Chess.pawn (color: .White, position: ("c", 3))
 var f7 = Chess.pawn (color: .White, position: ("d", 3))
+var f8 = Chess.elephant(color: .White, position: ("a", 8))
 
-var figures = [f1, f2, f3, f4, f5, f6, f7]
+var figures = [f1, f2, f3, f4, f5, f6, f7, f8]
 
 
+typealias figureInfo = (name : String, color: Chess.Color, position: Chess.Position)
+
+enum figureName : String {
+
+    case king = "King"
+    case queen = "Queen"
+    case pawn = "Pawn"
+    case knight = "Knight"
+    case elephant = "Elephant"
+    case rook = "Rook"
+}
+
+func FigureInfo (figure: Chess) -> figureInfo {
+
+    typealias Name = figureName
+    
+    switch figure{
+    
+        case let .king(col, pos) : return (Name.king.rawValue, col, pos)
+        case let .queen(col, pos) : return (Name.queen.rawValue, col, pos)
+        case let .pawn(col, pos) : return (Name.pawn.rawValue, col, pos)
+        case let .knight(col, pos) : return (Name.knight.rawValue, col, pos)
+        case let .elephant(col, pos) : return (Name.elephant.rawValue, col, pos)
+        case let .rook(col, pos) : return (Name.rook.rawValue, col, pos)
+        
+    }
+}
 
 
 
 //2. Сделайте так, чтобы энумовские значения имели rawValue типа String. Каждому типу фигуры установите соответствующее английское название. Создайте функцию, которая выводит в консоль (текстово, без юникода) название фигуры, цвет и расположение. Используя эту функцию распечатайте все фигуры в массиве.
-//
+
+
+
+
+
+
 //3. Используя красивые юникодовые представления шахматных фигур, выведите в консоли вашу доску. Если клетка не содержит фигуры, то используйте белую или черную клетку. Это должна быть отдельная функция, которая распечатывает доску с фигурами (принимает массив фигур и ничего не возвращает)
 //
 //4. Создайте функцию, которая будет принимать шахматную фигуру и тюпл новой позиции. Эта функция должна передвигать фигуру на новую позицию, причем перемещение должно быть легальным: нельзя передвинуть фигуру за пределы поля и нельзя двигать фигуры так, как нельзя их двигать в реальных шахматах (для мегамонстров программирования). Вызовите эту функцию для нескольких фигур и распечатайте поле снова.
