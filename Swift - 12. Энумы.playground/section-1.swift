@@ -36,6 +36,11 @@ var f8 = Chess.elephant(color: .White, position: ("a", 8))
 var figures = [f1, f2, f3, f4, f5, f6, f7, f8]
 
 
+
+//2. Сделайте так, чтобы энумовские значения имели rawValue типа String. Каждому типу фигуры установите соответствующее английское название. Создайте функцию, которая выводит в консоль (текстово, без юникода) название фигуры, цвет и расположение. Используя эту функцию распечатайте все фигуры в массиве.
+
+
+
 typealias figureInfo = (name : String, color: Chess.Color, position: Chess.Position)
 
 enum figureName : String {
@@ -52,28 +57,47 @@ func FigureInfo (figure: Chess) -> figureInfo {
 
     typealias Name = figureName
     
-    switch figure{
+    switch figure {
     
-        case let .king(col, pos) : return (Name.king.rawValue, col, pos)
-        case let .queen(col, pos) : return (Name.queen.rawValue, col, pos)
-        case let .pawn(col, pos) : return (Name.pawn.rawValue, col, pos)
-        case let .knight(col, pos) : return (Name.knight.rawValue, col, pos)
-        case let .elephant(col, pos) : return (Name.elephant.rawValue, col, pos)
-        case let .rook(col, pos) : return (Name.rook.rawValue, col, pos)
+        case let .king(color, position) : return (Name.king.rawValue, color, position)
+        case let .queen(color, position) : return (Name.queen.rawValue, color, position)
+        case let .pawn(color, position) : return (Name.pawn.rawValue, color, position)
+        case let .knight(color, position) : return (Name.knight.rawValue, color, position)
+        case let .elephant(color, position) : return (Name.elephant.rawValue, color, position)
+        case let .rook(color, position) : return (Name.rook.rawValue, color, position)
         
     }
 }
 
+func print(figure: Chess) {
+
+    let inf = FigureInfo(figure)
+    
+    println("\(inf.name) \(inf.color.rawValue) \(inf.position.x) \(inf.position.y)")
+    
+}
+
+func print (chess: [Chess]) {
 
 
-//2. Сделайте так, чтобы энумовские значения имели rawValue типа String. Каждому типу фигуры установите соответствующее английское название. Создайте функцию, которая выводит в консоль (текстово, без юникода) название фигуры, цвет и расположение. Используя эту функцию распечатайте все фигуры в массиве.
+    for val in chess {
+        print(val)
+    }
+}
 
+print(figures)
 
 
 
 
 
 //3. Используя красивые юникодовые представления шахматных фигур, выведите в консоли вашу доску. Если клетка не содержит фигуры, то используйте белую или черную клетку. Это должна быть отдельная функция, которая распечатывает доску с фигурами (принимает массив фигур и ничего не возвращает)
+
+
+
+
+
+
 //
 //4. Создайте функцию, которая будет принимать шахматную фигуру и тюпл новой позиции. Эта функция должна передвигать фигуру на новую позицию, причем перемещение должно быть легальным: нельзя передвинуть фигуру за пределы поля и нельзя двигать фигуры так, как нельзя их двигать в реальных шахматах (для мегамонстров программирования). Вызовите эту функцию для нескольких фигур и распечатайте поле снова.
 //
