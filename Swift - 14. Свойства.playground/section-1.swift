@@ -6,6 +6,8 @@
 
 import Foundation
 
+let correctYear = 2015
+let minYearOld =  6
 
 struct People {
     
@@ -47,8 +49,9 @@ struct People {
             }
     }
     
+
     var data : Data
-  
+   
     struct Data {
     
         var day : Int
@@ -57,16 +60,16 @@ struct People {
         
         var howOld : Int {
         
-            return 2015 - year
+            return correctYear - year
                         }
         
         var howScool : Int {
         
-            if howOld <= 6 {
+            if howOld <= minYearOld {
                  return 0
                 }
             else {
-            return howOld - 6
+            return howOld - minYearOld
                 }
         }
     }
