@@ -1,0 +1,231 @@
+//Рассмотрим такую ситуацию: есть семья - папа, мама и дети.
+//Папа глава семьи, у него есть Мама, Мама контролирует детей, т.е. иерархия: Папа - Мама - Дети, Дети на одном уровне.
+//Дети могут вызывать друг друга и они могут искать пути, как общаться с другими Детьми, например говорить "дай игрушку", спрашивать Маму: "Мама, дай конфетку", общаться с Папой: "Папа, купи игрушку".
+//Вся эта иерархия лежит в объекте класса Семья, у которого есть методы, например распечатать всю Семью, т.е. метод вернёт массив всех членов Семьи.
+//У Папы есть 3 кложера (closures) - 1. когда он обращается к Семье - распечатать всю Семью, 2. распечатать Маму, 3. распечатать всех Детей.
+//Создать всю иерархию со связями. При выходе из зоны видимости все объекты должны быть уничтожены. Используем Command-Line Tool.
+
+
+class Family {
+    
+    var dad : Dad
+    var mom : Mom
+    var kids : [Kids]
+    var family: [Human]
+    
+    init (dad: Dad, mom: Mom, kids : [Kids]) {
+    
+        self.dad = dad
+        self.mom = mom
+        self.kids = kids
+        
+        family = [dad, mom]
+        for kid in kids {
+            kid.mom = mom
+            kid.dad = dad
+            
+            family += [kid]
+        }
+        
+        self.mom.husband = dad
+        self.dad.wife = mom
+        self.mom.kid = kids
+        self.dad.family = self
+    
+    }
+    
+    func print(){
+        for i in family{
+            println("\(i.name)")
+        }
+    }
+
+deinit{
+    println("Family Exist")
+
+    }
+}
+
+class Human {
+    var name : String
+    init (name : String){
+        self.name = name
+    }
+}
+
+class Dad : Human {
+    var wife : Mom!
+    weak var family : Family!
+    
+    lazy var printFamily : () -> () = {
+        [unowned self] in
+        self.family.print()
+    }
+    
+    lazy var printWife : () -> () = {
+        [unowned self] in
+        println("My wife : \(self.wife.name)")
+    }
+    
+    lazy var printKids: () -> () = {
+         [unowned self] in
+        for kid in self.wife.kid {
+        println("My kids : \(kid.name)")
+        }
+    }
+    
+    func toDo () {
+        println("\(self.name) by the toy")
+    }
+    
+    deinit{
+    println("Dad exit")
+    }
+}
+
+
+class Mom : Human {
+    var kid: [Kids]!
+    weak var husband : Dad!
+    
+    func giveCandy(){
+        println("\(self.name)  give a candy")
+    }
+}
+
+
+class Kids: Human {
+    weak var mom : Mom!
+    weak var dad : Dad!
+    
+    func giveCandy() {
+        mom.giveCandy()
+        }
+    
+    
+    func toDo (){
+        dad.toDo()
+        }
+    
+    deinit{
+        println("Kid \(name) exit")
+    }
+}
+
+
+var familyPupkin = Family(dad: Dad(name: "Jon"), mom: Mom(name: "Mary"), kids: [Kids(name: "Sam"), Kids(name: "Oly"), Kids(name: "Anna")])
+
+familyPupkin.dad.printWife()
+println()
+familyPupkin.dad.printFamily()
+println()
+familyPupkin.mom.giveCandy()
+
+
+
+
+
+
+/*
+var playground = true
+
+class Student  {
+    
+    unowned var teacher : Teacher
+    
+    deinit {
+        println("goodbye student")
+    }
+    
+    init(teacher : Teacher) {
+        self.teacher = teacher
+    }
+}
+
+class Teacher {
+    
+    var student : Student!
+    
+    var test : (()->())?
+    
+    lazy var test2 : (Bool)->() = {
+        [unowned self] (a: Bool) in
+        println(self.student)
+        //println(self)
+    }
+    
+    init() {
+        student = Student(teacher: self)
+    }
+    
+    deinit {
+        println("goodbye teacher")
+    }
+}
+
+var closure : (() -> ())?
+
+if playground {
+    
+    //var t : Teacher?
+    var teacher = Teacher()
+    
+    teacher.test2(true)
+    
+    /*
+    teacher.test = {
+        [unowned teacher] in
+        println(teacher)
+    }
+    */
+    /*
+    if playground {
+        
+        var student = Student(teacher: teacher)
+        teacher.student = student
+    }*/
+    
+    /*
+    var student = teacher.student
+    closure = {
+        [weak student] in
+        println(student)
+    }*/
+    
+    println("exit playground")
+}
+
+
+
+
+var x = 10
+var y = 20
+
+class Human {
+    var name = "a"
+}
+
+var h = Human()
+
+var closure3 : () -> () = {
+    [x] in
+    println("\(x) \(y)")
+}
+
+var closure2 : (Int) -> Int = {[x,y,h] (a: Int) -> Int in
+    println("\(x) \(y) \(h.name)")
+    return a
+}
+
+closure2(1)
+
+x = 30
+y = 40
+h = Human()
+h.name = "b"
+
+closure2(1)
+
+println("end")
+
+*/
