@@ -1,0 +1,344 @@
+
+/*Сегодня будем строить свою небольшую социальную сеть.
+    1. Сделать класс Человек, у этого класса будут проперти Папа, Мама, Братья, Сестры (всё опционально).
+Сделать примерно 30 человек, взять одного из них, поставить ему Папу/Маму. Папе и Маме поставить Пап/Мам/Братьев/Сестер. Получится большое дерево иерархии.
+Посчитать, сколько у этого человека двоюродных Братьев, троюродных Сестёр, Теть, Дядь, итд
+
+3. Расширить класс человек, у него будет проперти Домашние_животные. Животные могут быть разные (попугаи, кошки, собаки...) их может быть несколько, может и не быть вообще.
+Раздать некоторым людям домашних животных. Пройти по всему массиву людей. Проверить каждого человека на наличие питомца, если такой есть - добавлять всех животных в массив животных. Посчитать сколько каких животных в этом массиве.
+Вся эта живность должна быть унаследована от класса Животные. У всех животных должен быть метод Издать_звук(крик) и у каждого дочернего класса этот метод переопределён на свой, т.е. каждое животное издаёт свой звук.
+Когда проходим по массиву животных, каждый представитель вида животных должен издать свой звук.
+
+Обязательно используем в заданиях Optional chaining и Type casting
+
+
+2. Все сестры, матери,... должны быть класса Женщина, Папы, братья,... класса Мужчины.
+У Мужчин сделать метод Двигать_диван, у Женщин Дать_указание (двигать_диван). Всё должно работать как и ранее.
+Всех этих людей положить в массив Семья, пройти по массиву посчитать количество Мужчин и Женщин, для каждого Мужчины вызвать метод Двигать_диван, для каждой женщины Дать_указание.
+*/
+
+
+class Human {
+    
+    var firstName : String
+    var lastName : String
+    
+    var fullName : String {
+        
+        get {
+            return firstName + " " + lastName
+        }
+    }
+
+    
+    
+    init (firstName : String, lastName : String){
+    
+        self.firstName = firstName
+        self.lastName = lastName
+    }
+    
+    
+    var dad : Human?
+    var mom  : Human?
+    
+    var brothers : [Human]? {
+   
+        didSet  {
+            self.addRelative(brothers!)
+        }
+    }
+    
+    
+    var sisters : [Human]? {
+        
+        didSet  {
+            self.addRelative(sisters!)
+        }
+    }
+  
+    func addRelative(relativeArray :[Human]) {
+        
+        for people in relativeArray {
+            
+            if !people.chekBrotherSister(self, arrayBrotherSister: people.brothers){
+            
+                if people.brothers?.append(self) == nil {
+                
+                    people.brothers = [self]
+                }
+            }
+            else{
+            
+                if !people.chekBrotherSister(self, arrayBrotherSister: people.sisters){
+                
+                    if people.sisters?.append(self) == nil {
+                        people.sisters = [self]
+                    }
+                }
+            }
+            
+            people.dad = self.dad
+            people.mom = self.mom
+        }
+        
+    }
+    
+    
+    func chekBrotherSister (peoples : Human, arrayBrotherSister: [Human]?) -> Bool {
+        
+        if let BrotherSister = arrayBrotherSister {
+            
+            for i in BrotherSister {
+                
+                if peoples === i {
+                    
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+}
+
+
+
+class Animals {
+    
+    var nickname : String
+    
+    init (nickname : String) {
+        
+            self.nickname = nickname
+        }
+
+    func sound () {
+        
+        println("Издает звуки")
+        }
+    
+}
+
+class Cat: Animals {
+    
+    override func sound() {
+        println("мяу-мяу")
+    }
+}
+
+class Dog: Animals {
+    
+    override func sound() {
+        println("гав-гав")
+    }
+}
+
+
+
+class Man : Human {
+    
+    func MuveSofa(){
+        println("Двигает диван")
+    
+    }
+}
+
+class Woman : Human {
+    
+    func Say() {
+        println("дала указание")
+    
+    }
+}
+
+
+let People1 = Man(firstName: "Николай", lastName: "Созинов")
+let People2 = Woman(firstName: "Татьяна", lastName: "Лавренюк")
+let People3 = Woman(firstName: "Катя", lastName: "Лавренюк")
+let People4 = Man(firstName: "Олег", lastName: "Лавренюк")
+let People5 = Woman(firstName: "Настя", lastName: "Горбань")
+let People6 = Woman(firstName: "Галя", lastName: "Лавренюк")
+let People7 = Man(firstName: "Игорь", lastName: "Безбородов")
+
+let Animals1 = Dog(nickname: "Милан")
+let Animals2 = Dog(nickname: "Чара")
+let Animals3 = Cat(nickname: "Изя")
+let Animals4 = Cat(nickname: "РжавОй")
+let Animals5 = Cat(nickname: "Василиса")
+
+People2.sisters = [People3, People5]
+People1.brothers = [People4]
+People4.sisters = [People2, People3, People5]
+
+People6.mom = People6
+People7.dad = People7
+
+
+println(" \(People2.fullName) имеет \(People5.sisters!.count) сестер")
+println(" \(People2.fullName) имеет \(People3.brothers!.count) брата")
+
+println("\(People3.fullName) имеет \(People3.sisters!.count) сестер")
+
+println("Отец у нас \(People7.fullName), а мать - \(People6.fullName)")
+
+println("\(People1.fullName) есть \(People1.brothers!.count) брата")
+
+println("\(People4.fullName) есть \(People4.sisters!.count) сестра")
+
+
+
+
+println("\(Animals1.nickname) сказал \(Animals1.sound())")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+//import Foundation
+
+class Address {
+    
+    var street = "Deribasovskaya"
+    var number = "1"
+    var city = "Odessa"
+    var country = "Ukraine"
+}
+
+struct Garage {
+    var size = 2
+}
+
+class House {
+    
+    var rooms = 1
+    var address = Address()
+    var garage : Garage? = Garage()
+}
+
+class Car {
+    var model = "Zaporojec"
+    
+    func start() {
+    }
+}
+
+
+class Person {
+    
+    var cars : [Car]?// = [Car()]
+    var house : House?// = House()
+}
+
+let p = Person()
+
+//p.cars![0]
+//p.house!
+
+//p.house!.garage!.size
+
+
+
+if (p.house?.garage?.size = 3) != nil {
+    println("upgrade!")
+} else {
+    println("failure!")
+}
+
+
+if let size = p.house?.garage?.size {
+    size
+}
+
+//p.cars?[1].model
+
+if p.cars?[0].start() != nil {
+    println("start!")
+} else {
+    println("failure!")
+}
+
+
+//////////
+
+
+class Symbol {
+    
+}
+
+class A : Symbol {
+    func aa(){}
+}
+
+class B : Symbol {
+    func bb(){}
+}
+
+//AnyObject
+//Any
+let array : [Any] = [A(), B(), Symbol(), A(), A(), B(), "a", 5,
+    {() -> () in return}]
+
+var aCount = 0
+var bCount = 0
+var sCount = 0
+
+for value in array {
+    
+    if value is A {
+        aCount++
+    } else if value is B {
+        bCount++
+    } else if value is Symbol {
+        sCount++
+    }
+    
+    if value is String {
+        println("tada")
+    }
+    
+    if let fun = value as? ()->() {
+        println("tada")
+        fun()
+    }
+    
+    if let a = value as? A {
+        a.aa()
+    } else if let b = value as? B {
+        b.bb()
+    }
+    
+    //let a = value as A
+    
+}
+
+aCount
+bCount
+sCount
+
+
+
+
+*/
+
+
+
+
